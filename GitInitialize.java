@@ -9,22 +9,29 @@ import java.security.NoSuchAlgorithmException;
 public class GitInitialize {
 
     public static void main(String[] args) {
-        System.out.println("Testing init()");
-        System.out.println(init(false, false, false, false));
+        // System.out.println("Testing init()");
+        // System.out.println(init(false, false, false, false));
 
-        System.out.println();
+        // System.out.println();
 
-        System.out.println("Testing hashFile()");
-        try {
-            System.out.println(hashFile("Hello.txt"));
-        } catch (IOException e) {
-            System.out.println("File error: " + e.getMessage());
-        }
+        // System.out.println("Testing hashFile()");
+        // try {
+        //     System.out.println(hashFile("Hello.txt"));
+        // } catch (IOException e) {
+        //     System.out.println("File error: " + e.getMessage());
+        // }
 
-        System.out.println();
+        // System.out.println();
 
-        System.out.println("Testing createBlob()");
-        System.out.println(createBlob("Hello.txt"));
+        // System.out.println("Testing createBlob()");
+        // System.out.println(createBlob("Hello.txt"));
+
+        // System.out.println();
+
+        System.out.println("Testing updateIndexFile()");
+        System.out.println(updateIndexFile("Hello.txt"));
+        System.out.println(updateIndexFile("Hello1.txt"));
+
     }
 
     // This init method does four things:
@@ -187,6 +194,79 @@ public class GitInitialize {
 
             //return the name of the newly created file
             return name;
+
+        } catch (IOException e) {
+            System.out.println("File error: " + e.getMessage());
+            return "";
+        }
+    }
+
+    //This method adds a file's entry to git/index
+    //It takes in a String parameter filePath that represents, u guessed it!, the path of the file we're staging
+    //Each entry follows this format: Each line is the SHA-1 hash, one space, and the path relative to the project root. Nothing else goes on the line.
+    //It returns the entry added to index
+    public static String updateIndexFile(String filePath) {
+
+        try {
+
+            //turn index into a Java File Object
+            File index = new File("git/index");
+
+            StringBuilder entry = new StringBuilder();
+
+            //the first part of the entry is the file's has
+            String hash = hashFile(filePath);
+
+            //append hash to entry
+            entry.append(hash);
+
+            //append a space to entry
+            entry.append(" ");
+
+            //append the path to entry 
+            entry.append(filePath);
+
+         
+            
+            //this is the contents in the index file before we write to it
+            //we'll want to read everything in file, attach it to this variable, write this variable into file, write a new line into file, then write entry into file
+            StringBuilder indexContents = new StringBuilder();
+
+            String line;
+
+            BufferedReader fileReader = new BufferedReader(new FileReader("git/index"));
+
+            // Add every line from the file we're reading to fileContents
+            while((line = fileReader.readLine()) != null) {
+                indexContents.append(line);
+            }
+
+            
+               
+            //create the fileWriter for index
+            FileWriter indexWriter = new FileWriter(index);
+
+            //write indexContents into index
+            // if there is something already inside the file write a new line to it before entry
+            if (indexContents.length() > 0) {
+                indexWriter.write(indexContents.toString() + "\n" + entry.toString());
+            } else {
+                indexWriter.write(indexContents.toString() + entry.toString());
+            }
+            
+
+            //close the file reader
+            fileReader.close();
+
+            //close indexWriter
+            indexWriter.close();
+
+
+            //write entry into index
+            // indexWriter.write(entry.toString());
+
+            //return entry.toString()
+            return entry.toString();
 
         } catch (IOException e) {
             System.out.println("File error: " + e.getMessage());
