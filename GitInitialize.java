@@ -9,14 +9,22 @@ import java.security.NoSuchAlgorithmException;
 public class GitInitialize {
 
     public static void main(String[] args) {
+        System.out.println("Testing init()");
         System.out.println(init(false, false, false, false));
 
+        System.out.println();
+
+        System.out.println("Testing hashFile()");
         try {
             System.out.println(hashFile("Hello.txt"));
         } catch (IOException e) {
             System.out.println("File error: " + e.getMessage());
         }
 
+        System.out.println();
+
+        System.out.println("Testing createBlob()");
+        System.out.println(createBlob("Hello.txt"));
     }
 
     // This init method does four things:
@@ -138,5 +146,51 @@ public class GitInitialize {
         }
 
         return hash;
+    }
+
+    //This method that creates a blob for a given file
+    //It takes in the file path of an existing file
+    //It computes the SHA-1 hash of the file's contents
+    //Then creates a new file in git/objects/ with that hash as its filename
+    //Then it writes the original file's content into the blob, byte for byte, unchanged
+    //It returns the hashed file name of the new file created inside of git/objects/
+    public static String createBlob(String filePath) {
+
+        try {
+            //create the reader for the file we want to copy
+            BufferedReader fileReader = new BufferedReader(new FileReader(filePath));
+
+            //Instantiate the file's contents as an empty StringBuilder (This is the blob)
+            StringBuilder fileContents = new StringBuilder();
+
+            //Instantiate the String variable line: this represents the current line in the file we're reading
+            String line;
+
+            //Add every line from the file we're reading to fileContents
+            while((line = fileReader.readLine()) != null) {
+                fileContents.append(line);
+            }
+
+            fileReader.close();
+
+            //Instantiate the name of newFile as the hash of filePath
+            String name = hashFile(filePath);
+
+            //create the new file
+            File newFile = new File("git/objects/", name);
+
+            //create the writer for newFile and write the blob into it
+            FileWriter newFileWriter = new FileWriter(newFile);
+            newFileWriter.write(fileContents.toString());
+
+            newFileWriter.close();
+
+            //return the name of the newly created file
+            return name;
+
+        } catch (IOException e) {
+            System.out.println("File error: " + e.getMessage());
+            return "";
+        }
     }
 }
