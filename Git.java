@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Git {
 
@@ -36,6 +37,17 @@ public class Git {
         // System.out.println(updateIndexFile("Hello.txt"));
         // System.out.println(updateIndexFile("Hello1.txt"));
 
+        try {
+            init(false, false, false, false);
+            updateIndexFile("folder/Hello.txt");
+            String c1 = commit("me", "commit 1");
+            System.out.println("c1 " + c1);
+            updateIndexFile("folder/Hello2.txt");
+            String c2 = commit("me", "commit 2");
+            System.out.println("c2 " + c2 + " (open it, parent c1)");
+        } catch (IOException e) {
+            System.out.println("rip " + e);
+        }
     }
 
     // This init method does four things:
@@ -445,5 +457,50 @@ public class Git {
 
             workingList.add("tree " + treeHash + " " + deepestDirectory); //finish check, no name needs to be change boka
         }
+    }
+
+    public static String commit(String author, String message) throws IOException {
+        String treeHash = createTreeFromIndex();
+
+        String parent = "";
+        BufferedReader headReader = new BufferedReader(new FileReader("git/HEAD"));
+        String headLine = headReader.readLine();
+        headReader.close();
+        if (headLine != null) {
+            parent = headLine.trim();
+        }
+
+        String date = new Date().toString();
+
+        StringBuilder commitContents = new StringBuilder();
+        commitContents.append("tree: " + treeHash + "\n");
+        if (!parent.isEmpty()) {
+            commitContents.append("parent: " + parent + "\n");
+        }
+        commitContents.append("author: " + author + "\n");
+        commitContents.append("date: " + date + "\n");
+        commitContents.append("message: " + message + "\n");
+
+        File tempfile = new File("git/objects/newCommit.txt");
+        FileWriter writer = new FileWriter(tempfile);
+        writer.write(commitContents.toString());
+        writer.close();
+
+        String commitHash = hashFile(tempfile.getPath());
+
+        if (!tempfile.delete()) {
+            throw new IOException("Could not delete newCommit.txt");
+        }
+
+        File commitFile = new File("git/objects/" + commitHash);
+        FileWriter commitWriter = new FileWriter(commitFile);
+        commitWriter.write(commitContents.toString());
+        commitWriter.close();
+
+        FileWriter headWriter = new FileWriter("git/HEAD");
+        headWriter.write(commitHash);
+        headWriter.close();
+
+        return commitHash;
     }
 }
