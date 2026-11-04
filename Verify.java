@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class Verify {
     public static void main(String[] args) throws IOException {
-        System.out.println(GitInitialize.init(false, false, false, false));
+        System.out.println(Git.init(false, false, false, false));
 
         // GitInitialize.createBlob("hello.txt");
         // GitInitialize.hashFile("Sha1Test.txt");
@@ -17,11 +17,11 @@ public class Verify {
         // String hash = GitInitialize.createTree(workingList, "docs");
         // System.out.println(hash);
 
-        GitInitialize.updateIndexFile("Folder/Stuff/Hello.txt");
-        GitInitialize.updateIndexFile("Folder/Hello.txt");
+        Git.updateIndexFile("Folder/Stuff/Hello.txt");
+        Git.updateIndexFile("Folder/Hello.txt");
    
 
-        System.out.println(GitInitialize.createTreeFromIndex());
+        System.out.println(Git.createTreeFromIndex());
 
         // System.out.println(GitInitialize.updateIndexFile("folder/Hello.txt"));
         // System.out.println(GitInitialize.updateIndexFile("folder/Hello.txt"));
