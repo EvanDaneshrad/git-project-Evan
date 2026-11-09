@@ -27,8 +27,8 @@ public class GitInitialize {
 
         // System.out.println();
 
-        // System.out.println("Testing createBlob()");
-        // System.out.println(createBlob("Hello.txt"));
+        System.out.println("Testing createBlob()");
+        System.out.println(createBlob("Hello.txt"));
 
         // System.out.println();
 
@@ -260,6 +260,7 @@ public class GitInitialize {
             BufferedReader fileReader = new BufferedReader(new FileReader("git/index"));
 
             // Add every line from the file we're reading to fileContents
+<<<<<<< Updated upstream
             while ((line = fileReader.readLine()) != null) {
                 String[] parts = line.split(" ", 2);
 
@@ -278,6 +279,26 @@ public class GitInitialize {
                 indexContents.append("\n");
             }
 
+=======
+            while((line = fileReader.readLine()) != null) {
+                indexContents.append(line);
+                indexContents.append("\n");
+            }
+
+            
+               
+            //create the fileWriter for index
+            FileWriter indexWriter = new FileWriter(index);
+
+            //write indexContents into index
+            // if there is something already inside the file write a new line to it before entry
+            if (indexContents.length() > 0) {
+                indexWriter.write(indexContents.toString() + entry.toString());
+            }
+            
+
+            //close the file reader
+>>>>>>> Stashed changes
             fileReader.close();
 
             if (!found) {
