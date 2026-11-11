@@ -41,9 +41,12 @@ public class GitInitialize {
     // This init method does four things:
     // 1. Create a git/ directory if it doesn't already exist
     // 2. Create an objects/ directory inside of git/ if it doesn't already exist
-    // 3. Create a file named index inside git/ if it does not already exist, with no extension
-    // 4. Create a file named HEAD inside git/ if it does not already exist, with no extension
-    // all these prarmeters represent whether each file/directory already exists in ., they will be
+    // 3. Create a file named index inside git/ if it does not already exist, with
+    // no extension
+    // 4. Create a file named HEAD inside git/ if it does not already exist, with no
+    // extension
+    // all these prarmeters represent whether each file/directory already exists in
+    // ., they will be
     // checked throughout the method and all start as false
     public static String init(boolean gitDirectoryExists, boolean objectsDirectoryExists,
             boolean indexFileExists, boolean HEADExists) {
@@ -63,7 +66,8 @@ public class GitInitialize {
                 gitDirectoryExists = true;
             }
 
-            // initialize the objects directory inside of git by first creating a File Object called
+            // initialize the objects directory inside of git by first creating a File
+            // Object called
             // objects
             File objects = new File(gitDirectory, "objects");
 
@@ -77,7 +81,8 @@ public class GitInitialize {
                 objectsDirectoryExists = true;
             }
 
-            // initialize the index file by first creating a File object inside of git called index
+            // initialize the index file by first creating a File object inside of git
+            // called index
             File index = new File(gitDirectory, "index");
 
             // make sure a file named index doesn't already exist
@@ -90,7 +95,8 @@ public class GitInitialize {
                 indexFileExists = true;
             }
 
-            // initialize the HEAD file by first creating a File object inside of git called HEAD
+            // initialize the HEAD file by first creating a File object inside of git called
+            // HEAD
             File HEAD = new File(gitDirectory, "HEAD");
 
             // make sure a file named HEAD doesn't already exist
@@ -103,7 +109,8 @@ public class GitInitialize {
                 HEADExists = true;
             }
 
-            // if all four of the boolean parameters are true return: Git Repository Already Exists
+            // if all four of the boolean parameters are true return: Git Repository Already
+            // Exists
             // otherwise return: Git Repository Created
             if (gitDirectoryExists == true && objectsDirectoryExists == true
                     && indexFileExists == true && HEADExists == true) {
@@ -119,7 +126,8 @@ public class GitInitialize {
     }
 
     /**
-     * Reads the file at filePath and returns its SHA-256 hash as a lowercase 64-character
+     * Reads the file at filePath and returns its SHA-256 hash as a lowercase
+     * 64-character
      * hexadecimal string.
      */
     public static String hashFile(String filePath) throws IOException {
@@ -137,7 +145,8 @@ public class GitInitialize {
         FileInputStream reader = new FileInputStream(filePath);
 
         int character;
-        // while the current character being read is valid, convert it into a byte and digest that
+        // while the current character being read is valid, convert it into a byte and
+        // digest that
         // specific byte
         while ((character = reader.read()) != -1) {
             digest.update((byte) character);
@@ -163,8 +172,10 @@ public class GitInitialize {
     // It takes in the file path of an existing file
     // It computes the SHA-1 hash of the file's contents
     // Then creates a new file in git/objects/ with that hash as its filename
-    // Then it writes the original file's content into the blob, byte for byte, unchanged
-    // It returns the hashed file name of the new file created inside of git/objects/
+    // Then it writes the original file's content into the blob, byte for byte,
+    // unchanged
+    // It returns the hashed file name of the new file created inside of
+    // git/objects/
     public static String createBlob(String filePath) {
 
         try {
@@ -174,7 +185,8 @@ public class GitInitialize {
             // Instantiate the file's contents as an empty StringBuilder (This is the blob)
             StringBuilder fileContents = new StringBuilder();
 
-            // Instantiate the String variable line: this represents the current line in the file
+            // Instantiate the String variable line: this represents the current line in the
+            // file
             // we're reading
             int c;
 
@@ -211,9 +223,11 @@ public class GitInitialize {
     }
 
     // This method adds a file's entry to git/index
-    // It takes in a String parameter filePath that represents, u guessed it!, the path of the file
+    // It takes in a String parameter filePath that represents, u guessed it!, the
+    // path of the file
     // we're staging
-    // Each entry follows this format: Each line is the SHA-1 hash, one space, and the path relative
+    // Each entry follows this format: Each line is the SHA-1 hash, one space, and
+    // the path relative
     // to the project root. Nothing else goes on the line.
     // It returns the entry added to index
     public static String updateIndexFile(String filePath) {
@@ -248,8 +262,6 @@ public class GitInitialize {
             // append the path to entry
             entry.append(relativePath);
 
-
-
             // this is the contents in the index file before we write to it
             // we'll want to read everything in file, attach it to this variable, write this
             // variable into file, write a new line into file, then write entry into file
@@ -260,7 +272,7 @@ public class GitInitialize {
             BufferedReader fileReader = new BufferedReader(new FileReader("git/index"));
 
             // Add every line from the file we're reading to fileContents
-<<<<<<< Updated upstream
+            // <<<<<<< Updated upstream
             while ((line = fileReader.readLine()) != null) {
                 String[] parts = line.split(" ", 2);
 
@@ -279,26 +291,24 @@ public class GitInitialize {
                 indexContents.append("\n");
             }
 
-=======
-            while((line = fileReader.readLine()) != null) {
-                indexContents.append(line);
-                indexContents.append("\n");
-            }
+            // =======
+            // while((line = fileReader.readLine()) != null) {
+            // indexContents.append(line);
+            // indexContents.append("\n");
+            // }
 
-            
-               
-            //create the fileWriter for index
-            FileWriter indexWriter = new FileWriter(index);
+            // //create the fileWriter for index
+            // FileWriter indexWriter = new FileWriter(index);
 
-            //write indexContents into index
-            // if there is something already inside the file write a new line to it before entry
-            if (indexContents.length() > 0) {
-                indexWriter.write(indexContents.toString() + entry.toString());
-            }
-            
+            // //write indexContents into index
+            // // if there is something already inside the file write a new line to it
+            // before entry
+            // if (indexContents.length() > 0) {
+            // indexWriter.write(indexContents.toString() + entry.toString());
+            // }
 
-            //close the file reader
->>>>>>> Stashed changes
+            // //close the file reader
+            // >>>>>>> Stashed changes
             fileReader.close();
 
             if (!found) {
@@ -316,12 +326,11 @@ public class GitInitialize {
             FileWriter indexWriter = new FileWriter(indexFile);
 
             // write indexContents into index
-            // if there is something already inside the file write a new line to it before entry
+            // if there is something already inside the file write a new line to it before
+            // entry
             indexWriter.write(indexContents.toString());
 
-      
             indexWriter.close();
-
 
             // write entry into index
             // indexWriter.write(entry.toString());
@@ -464,7 +473,8 @@ public class GitInitialize {
                 }
             }
 
-            workingList.add("tree " + treeHash + " " + deepestDirectory); //finish check, no name needs to be change boka
+            workingList.add("tree " + treeHash + " " + deepestDirectory); // finish check, no name needs to be change
+                                                                          // boka
         }
     }
 }
